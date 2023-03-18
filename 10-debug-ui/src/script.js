@@ -1,6 +1,13 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import gsap from 'gsap'
+import * as lil from 'lil-gui';
+
+/**
+ * Debug
+ */
+const gui = new lil.GUI();
+
 
 /**
  * Base
@@ -14,11 +21,28 @@ const scene = new THREE.Scene()
 /**
  * Object
  */
+const colorFormats = {
+	color: 0xff0000,
+    spin: () => {
+        gsap.to(mesh.rotation, { duration: 5, y: mesh.rotation.y + Math.PI * 2})
+    }
+};
+
 const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ color: 0xff0000 })
+const material = new THREE.MeshBasicMaterial({ color: colorFormats.color })
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
+gui.add(mesh.position, 'y', -3, 3, 0.01).name("shit box y")
+gui.add(mesh.position, 'x', -3, 3, 0.01).name("shit box x")
+gui.add(mesh.position, 'z', -3, 3, 0.01).name("shit box z")
+gui.add(mesh, 'visible').name("visibility of shit thingy")
+gui.add(material, 'wireframe')
+gui.addColor(colorFormats, 'color')
+    .onChange(() => {
+        material.color.set( colorFormats.color)
+    })
+gui.add(colorFormats, 'spin')
 /**
  * Sizes
  */
