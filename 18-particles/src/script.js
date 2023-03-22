@@ -32,8 +32,7 @@ const colors = new Float32Array(count * 3)
 
 for (let i = 0; i < count * 3; i++){
     positions[i] = (Math.random() - 0.5) * 10
-    colors[i] = Math.random()
-    
+    colors[i] = Math.random()    
 }
 particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
 particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
@@ -42,7 +41,7 @@ const particlesMaterial = new THREE.PointsMaterial({
     size: 0.1,
     sizeAttenuation: true
 })
-// particlesMaterial.color = new THREE.Color('#ff0000')
+particlesMaterial.color = new THREE.Color('#ff0000')
 particlesMaterial.alphaMap = particleTexture
 particlesMaterial.transparent = true
 // particlesMaterial.alphaTest = 0.001
@@ -51,9 +50,18 @@ particlesMaterial.depthWrite = false
 particlesMaterial.blending = THREE.AdditiveBlending
 particlesMaterial.vertexColors = true
 
+const colorFormats = {
+	color: 0xff0000
+};
+gui.addColor(colorFormats, 'color')
+    .onChange(() => {
+        particlesMaterial.color.set( colorFormats.color)
+    })
+
 // Points
 const particles = new THREE.Points(particlesGeometry, particlesMaterial)
 scene.add(particles) 
+
 
 /**
  * Sizes
@@ -111,15 +119,15 @@ const tick = () =>
     // Update particles
     // particles.rotation.y = elapsedTime * 0.2
 
-    for (let i = 0; i < count; i++) {
-        const i3 = i * 3
+    // for (let i = 0; i < count; i++) {
+    //     const i3 = i * 3
 
-        const x = particlesGeometry.attributes.position.array[i3]
+    //     const x = particlesGeometry.attributes.position.array[i3]
 
-        particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(elapsedTime + x)
-    }
+    //     particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(elapsedTime + x)
+    // }
 
-    particlesGeometry.attributes.position.needsUpdate = true
+    // particlesGeometry.attributes.position.needsUpdate = true
 
     // Update controls
     controls.update()
