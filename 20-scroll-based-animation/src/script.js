@@ -208,8 +208,8 @@ const tick = () =>
     // Animate camera
     camera.position.y = - scrollY / sizes.height * objectDistance
 
-    const parallaxX = cursor.x * 0.5
-    const parallaxY = - cursor.y * 0.5
+    const parallaxX = cursor.x * 2
+    const parallaxY = - cursor.y * 2
     cameraGroup.position.x = (parallaxX - cameraGroup.position.x) * 5 * deltaTime
     cameraGroup.position.y = (parallaxY - cameraGroup.position.y) * 5 * deltaTime
 
