@@ -101,7 +101,7 @@ material.onBeforeCompile = (shader) =>
             `
                 #include <beginnormal_vertex>
     
-                float angle = (position.y + uTime) * 0.9;
+                float angle = (position.y + uTime) * 0.1;
                 mat2 rotateMatrix = get2dRotateMatrix(angle);
     
                 objectNormal.xz = rotateMatrix * objectNormal.xz;
@@ -139,7 +139,7 @@ depthMaterial.onBeforeCompile = (shader) =>
         `
             #include <begin_vertex>
 
-            float angle = (position.y + uTime) * 0.9;
+            float angle = (position.y + uTime) * 0.1;
             mat2 rotateMatrix = get2dRotateMatrix(angle);
 
             transformed.xz = rotateMatrix * transformed.xz ;
@@ -171,7 +171,7 @@ gltfLoader.load(
  */
 const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(15, 15, 15),
-    new THREE.MeshStandardMaterial()
+    new THREE.MeshStandardMaterial( { side: THREE.DoubleSide })
 )
 plane.rotation.y = Math.PI
 plane.position.y = - 5
