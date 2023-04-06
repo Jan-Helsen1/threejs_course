@@ -16,7 +16,7 @@ void main()
     // Spin
     float angle = atan(modelPosition.x, modelPosition.z);
     float distanceToCenter = length(modelPosition.xz);
-    float angleOffset = (1.0 / distanceToCenter) * uTime * 0.25;
+    float angleOffset = (1.0 / distanceToCenter) * uTime * 0.5;
     angle += angleOffset;
     modelPosition.x = cos(angle) * distanceToCenter;
     modelPosition.z = sin(angle) *distanceToCenter;

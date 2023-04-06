@@ -253,7 +253,7 @@ void main()
     // float angle = atan(vUv.x - 0.5, vUv.y - 0.5);
     // angle /= 3.1415 * 2.0;
     // angle += 0.5;
-    // angle *= 100.0;
+    // angle *= 1000.0;
     // angle = mod(angle, 1.0);
     // float strength = angle;
 
@@ -262,7 +262,7 @@ void main()
     // float angle = atan(vUv.x - 0.5, vUv.y - 0.5);
     // angle /= 3.1415 * 2.0;
     // angle += 0.5;
-    // float strength = sin(angle * 1000.0);
+    // float strength = sin(angle * 10000.0);
 
     // // Pattern 45
     // float angle = atan(vUv.x - 0.5, vUv.y - 0.5);
