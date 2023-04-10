@@ -1,13 +1,26 @@
 import * as dat from 'lil-gui'
 import * as THREE from 'three'
+import Stats from 'stats.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import firefliesVertexShader from './shaders/fireflies/vertex.glsl'
+import firefliesFragmentShader from './shaders/fireflies/fragment.glsl'
+import portalFragmentShader from './shaders/portal/fragment.glsl'
+import portalVertexShader from './shaders/portal/vertex.glsl'
+
+/**
+ * Stats
+ */
+const stats = new Stats()
+stats.showPanel(0)
+document.body.appendChild(stats.dom)
 
 /**
  * Base
  */
-// Debug
+// Debug\
+const debugObject = {}
 const gui = new dat.GUI({
     width: 400
 })
@@ -49,7 +62,22 @@ const bakedMaterial = new THREE.MeshBasicMaterial({ map: bakedTexture })
 const poleLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffe5 })
 
 // Portal light material
-const portalLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff })
+debugObject.uColorStart = '#ff0000'
+debugObject.uColorEnd = '#0000ff'
+gui.addColor(debugObject, 'uColorStart').onChange(() => portalLightMaterial.uniforms.uColorStart.value.set(debugObject.uColorStart))
+gui.addColor(debugObject, 'uColorEnd').onChange(() => portalLightMaterial.uniforms.uColorEnd.value.set(debugObject.uColorEnd))
+
+const portalLightMaterial = new THREE.ShaderMaterial({
+    side: THREE.DoubleSide,
+    uniforms: 
+    {
+        uTime: { value: 0 },
+        uColorStart: { value: new THREE.Color(debugObject.uColorStart) },
+        uColorEnd: { value: new THREE.Color(debugObject.uColorEnd) }
+    },
+    vertexShader: portalVertexShader,
+    fragmentShader: portalFragmentShader
+ })
 
 /**
  * Model
@@ -75,6 +103,47 @@ gltfLoader.load(
 )
 
 /**
+ * Fireflies
+ */
+const firefliesGeometry = new  THREE.BufferGeometry()
+const firefliesCount = 30
+const positionArray = new Float32Array(firefliesCount * 3)
+const scaleArray = new Float32Array(firefliesCount)
+
+for (let i = 0; i < firefliesCount; i++)
+{
+    positionArray[i * 3 + 0] = (Math.random() - 0.5) * 4 
+    positionArray[i * 3 + 1] = Math.random() * 1.5
+    positionArray[i * 3 + 2] = (Math.random() - 0.5) * 4
+
+    scaleArray[i] = Math.random()
+}
+
+firefliesGeometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3))
+firefliesGeometry.setAttribute('aScale', new THREE.BufferAttribute(scaleArray, 1))
+
+// Material
+const firefliesMaterial = new THREE.ShaderMaterial({
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    uniforms:
+    {
+        uTime: { value: 0 },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+        uSize: { value: 200 }
+    },
+    vertexShader: firefliesVertexShader,
+    fragmentShader: firefliesFragmentShader
+})
+
+gui.add(firefliesMaterial.uniforms.uSize, 'value').min(0).max(500).step(1).name('firefliesSize')
+
+// Points
+const fireflies =  new THREE.Points(firefliesGeometry, firefliesMaterial)
+scene.add(fireflies)
+
+/**
  * Sizes
  */
 const sizes = {
@@ -95,6 +164,9 @@ window.addEventListener('resize', () =>
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+    // Update fireflies
+    firefliesMaterial.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2)
 })
 
 /**
@@ -122,6 +194,10 @@ renderer.outputEncoding = THREE.sRGBEncoding
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+debugObject.clearColor = '#201919'
+renderer.setClearColor(debugObject.clearColor)
+gui.addColor(debugObject, 'clearColor').onChange(() => renderer.setClearColor(debugObject.clearColor))
+
 /**
  * Animate
  */
@@ -129,7 +205,12 @@ const clock = new THREE.Clock()
 
 const tick = () =>
 {
+    stats.begin()
     const elapsedTime = clock.getElapsedTime()
+
+    // Update materials
+    firefliesMaterial.uniforms.uTime.value = elapsedTime
+    portalLightMaterial.uniforms.uTime.value = elapsedTime
 
     // Update controls
     controls.update()
@@ -139,6 +220,7 @@ const tick = () =>
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
+    stats.end()
 }
 
 tick()
