@@ -1,4 +1,5 @@
-import { useGLTF, Environment, Float, PresentationControls, ContactShadows, Html, Text } from '@react-three/drei'
+import { useGLTF, Environment, Float, PresentationControls, ContactShadows, Text } from '@react-three/drei'
+import Desktop from './Components/Desktop'
 
 export default function Experience()
 {
@@ -7,7 +8,7 @@ export default function Experience()
 
         <Environment preset='city' />
 
-        <color args={ [ '#241a1a' ] } attach="background" />
+        <color args={ [ '#141414' ] } attach="background" />
 
         <PresentationControls 
             global
@@ -22,7 +23,7 @@ export default function Experience()
                     width={ 2.5 }
                     height={ 1.65 }
                     intensity={ 65 }
-                    color={ '#ff6900' }
+                    color={ '#830000' }
                     rotation={ [ -0.1, Math.PI, 0] }
                     position={ [ 0, 0.55, -1.15 ] }
                 />
@@ -30,15 +31,7 @@ export default function Experience()
                     object={ pc.scene } 
                     position-y={ -1.2 }
                 >
-                    <Html
-                        transform
-                        wrapperClass='htmlScreen'
-                        distanceFactor={ 1.17 }
-                        position={ [ 0, 1.56, -1.4 ] }
-                        rotation-x={ -0.256 }
-                    >
-                        <iframe src='https://bruno-simon.com/html/' />
-                    </Html>
+                    <Desktop />
                 </primitive>
                 <Text
                     font='./bangers-v20-latin-regular.woff'
@@ -47,6 +40,7 @@ export default function Experience()
                     rotation-y={ -1.25 }
                     maxWidth={ 2 }
                     textAlign='center'
+                    color={ '#830000' }
                 >
                     JAN HELSEN
                 </Text>
