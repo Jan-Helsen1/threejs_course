@@ -17,7 +17,7 @@ export default function Experience() {
                 <Level count={ blocksCount} seed={blockSeed} />
                 <Player />
             </Physics>
-            <Effects />
+            {/* <Effects /> */}
         </>
     );
 }
